@@ -1,0 +1,13 @@
+---
+- name: First Ansible Script
+  hosts: routers
+  gather_facts: false
+
+  tasks:
+    - name: Step 1. Gather informations about the device
+      cisco.ios.ios_facts:
+       gather_subset: all
+      register: router_info
+    - name: Step 2. Print success message
+      debug:
+        msg: "Success! Connected with the router. System version: {{ ansible_net_version }} (Model: {{ ansible_net_model }})"
