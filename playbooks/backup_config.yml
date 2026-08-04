@@ -1,0 +1,23 @@
+---
+  - name: Backup Router Configuration
+    hosts: routers
+    gather_facts: false
+
+    tasks:
+      - name: Step 1. Check if backup folder exists
+        ansible.builtin.file:
+          path: ./backups
+          state: directory
+        delegate_to: localhost
+
+      - name: Step 2. Get Configuration from router (Running-Config)
+        cisco.ios.ios_config:
+          backup: yes
+          backup_options:
+            filename: sandbox_router_backup.txt
+            dir_path: ./backups
+        register: backup_result
+
+      - name: Step 3. Show path to the file
+        ansible.builtin.debug:
+          msg: "Success! Backup file saved in: {{ backup_result.backup_path }}" 
