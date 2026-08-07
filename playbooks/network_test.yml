@@ -1,0 +1,30 @@
+---
+- name: Network Testing and Configuration Audit
+  hosts: routers
+  gather_facts: false
+
+  tasks:
+    - name: Test 1A. Get the current NTP configuration from the router
+      cisco.ios.ios_command:
+        commands: show run | include ntp server
+      register: ntp_output
+
+    - name: Test 1B. Run the tests (Assertion)
+      ansible.builtin.assert:
+        that:
+          - "'ntp server 1.1.1.1' in ntp_output.stdout[0]"
+          - "'ntp server 8.8.8.8' in ntp_output.stdout[0]"
+        success_msg: "✅ Test completed: Both NTP servers (1.1.1.1 and 8.8.8.8) are configured correctly"
+        fail_msg: "❌ Test completed: The required NTP servers are missing from the configuration!"
+
+    - name: Test 2A. Check the status of the GigabitEthernet1 interface
+      cisco.ios.ios_command:
+        commands: show interfaces GigabitEthernet1 | include line protocol
+      register: int_output
+
+    - name: Test 2B. Check if the physical interface is up
+      ansible.builtin.assert:
+        that:
+          - "'is up, line protocol is up' in int_output.stdout[0]"
+        success_msg:  "✅ Test completed: GigabitEthernet1 state is UP"
+        fail_msg: "❌ Test completed: GigabitEthernet1 state is DOWN"
