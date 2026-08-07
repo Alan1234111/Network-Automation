@@ -1,0 +1,33 @@
+---
+- name: Base Configuration Standardization (Golden Image)
+  hosts: routers
+  gather_facts: false
+
+  tasks:
+    - name: Step 1. Configure NTP Servers
+      cisco.ios.ios_config:
+        lines:
+            - ntp server 1.1.1.1
+            - ntp server 8.8.8.8
+
+    - name: Step 2. Set official login banner (MOTD)
+      cisco.ios.ios_banner:
+        banner: motd
+        text: |
+          ********************************************************
+          NOTE: This device is managed by Ansible.
+          Any manual changes may be overwritten!
+          ********************************************************
+        state: present
+    
+    - name: Step 3. Create test interfaces using loops
+      cisco.ios.ios_interfaces:
+        config:
+          - name: "Loopback{{ item }}"
+            description:  "Test interface {{ item }} managed by Ansible"
+            enabled:  true
+        state: merged
+      loop:
+        - 101
+        - 102
+        - 103
