@@ -26,4 +26,4 @@ jobs:
             -e ROUTER_USER \
             -e ROUTER_PASS \
             -e ANSIBLE_HOST_KEY_CHECKING=False \
-            netdevops-ansible ansible-playbook playbooks/04_network_test.yml
+            netdevops-ansible ansible-playbook playbooks/network_test.yml
