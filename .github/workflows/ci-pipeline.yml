@@ -1,0 +1,28 @@
+name: NetDevOps CI/CD Pipeline
+
+on: [push]
+
+jobs:
+  network-audit:
+    name: Automatic Network audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get repository code
+        uses: actions/checkout@v4
+
+      - name: Create Docker image
+        run:  docker build -t netdevops-ansible .
+
+      - name: Run network tests inside of the container
+
+        env:
+          ROUTER_IP: ${{ secrets.ROUTER_IP }}
+          ROUTER_USER: ${{ secrets.ROUTER_USER }}
+          ROUTER_PASS: ${{ secrets.ROUTER_PASS }}
+        run: |
+          docker run --rm \
+            -e ROUTER_IP \
+            -e ROUTER_USER \
+            -e ROUTER_PASS \
+            netdevops-ansible ansible-playbook playbooks/04_network_test.yml
