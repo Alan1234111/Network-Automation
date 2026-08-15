@@ -12,6 +12,44 @@ This repository contains a comprehensive **NetDevOps** project demonstrating Inf
 
 The project goes beyond basic CLI configuration management by implementing real-world modern scenarios: extracting operational network data, provisioning devices via **RESTCONF API**, sending real-time alerts using the Cisco Webex API, and performing state validation. The core audit functionality is seamlessly integrated into a **GitHub Actions CI/CD pipeline**, ensuring that every code push triggers an isolated, automated network validation inside a Docker container against a live Cisco Sandbox environment.
 
+```mermaid
+graph TB
+    User([Network Engineer])
+    Repo[GitHub Repository]
+    CI[GitHub Actions CI/CD Pipeline]
+    Docker[Docker Container]
+    
+    subgraph Execution_Inside_Container ["Execution Inside Container"]
+        Ansible[Ansible Playbooks]
+        Python[Python Scripts]
+    end
+
+    Cisco[(Cisco IOS XE Sandbox)]
+    Webex[Cisco Webex Teams]
+
+    User -->|"git push"| Repo
+    Repo -->|"triggers"| CI
+    CI -->|"builds image"| Docker
+
+    Docker --> Ansible
+    Docker --> Python
+
+    Ansible -->|"SSH / CLI"| Cisco
+    Python -->|"HTTPS / RESTCONF"| Cisco
+    Python -->|"HTTPS / POST"| Webex
+
+    classDef default fill:#2c2c2c,stroke:#7a7a7a,stroke-width:1.5px,color:#fff,rx:5,ry:5;
+    classDef repo fill:#333333,stroke:#ffffff,stroke-width:2px,color:#fff,rx:5,ry:5;
+    classDef user fill:#2b2b2b,stroke:#e0e0e0,stroke-width:2px,color:#fff;
+    classDef ciscoStyle fill:#049fd9,stroke:#ffffff,stroke-width:2px,color:#fff,rx:5,ry:5;
+    classDef webexStyle fill:#00bceb,stroke:#ffffff,stroke-width:2px,color:#fff,rx:5,ry:5;
+
+    class User user;
+    class Repo repo;
+    class Cisco ciscoStyle;
+    class Webex webexStyle;
+```
+
 ## Key Features
 * **API-Driven Networking (RESTCONF):** Utilizing the Python `requests` library to interact with the Cisco IOS XE REST API.
 * **Infrastructure as Code (IaC):** Network state verification, configuration backups, and base standardizations defined in Ansible YAML playbooks.
