@@ -133,6 +133,12 @@ docker run --rm \
 ```
 (By modifying the command at the end, you can run any tool or script available inside the container's environment).
 
+## 📸 Demo & ChatOps Preview
+Below is an example of real-time operational reports delivered directly to a Cisco Webex space via the API script (webex_alert.py / get_interfaces.py):
+
+<img width="994" height="237" alt="image" src="https://github.com/user-attachments/assets/bfa93319-55c3-44ba-ada4-0ce424911c20" />
+
+
 ## CI/CD Pipeline
 
 The GitHub Actions workflow is triggered on every push. It provisions an Ubuntu runner, builds the Docker image, securely injects credentials from GitHub Secrets, and executes the network_test.yml playbook.
